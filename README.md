@@ -97,6 +97,20 @@ npm run zip     # 构建 + 打包 + 产物冒烟测试
 - `react` / `react-dom` / `jsdom` / `@testing-library/react` 都是**开发依赖，只服务于测试**；
   构建时 `react` 是 `external`（由宿主提供），绝不会打进 zip。
 
+### UI 约定
+
+插件的 Tailwind 工具类**不会生效**（宿主构建扫描不到插件源码）：样式自带在 `src/style.css`，
+以 `?inline` 打进产物后在运行时注入 `<style id="lollipop-rank-styles">`。
+改 UI 前请先读 `AGENTS.md` 的「UI 风格规范」，要点：
+
+- 选择器一律 `.lp-` 前缀；颜色只走 `--lp-*` CSS 变量（禁止写死 hex、禁止 Tailwind 类、禁止全局选择器）
+- 深色模式跟随宿主 `<html class="dark">`，浅/深两套变量都要给
+- 尺寸用 `rem`，跟随宿主 `html[data-font-size]` 的 small / default / large 三档
+- 卡片沿用宿主配方：`白/gray-900 底 + gray-300/gray-700 边框 + shadow`
+- 主题色（pink）只用于本插件专属动作（点糖 / 冠军 / 参数主按钮），通用动作走中性 `.lp-btn`
+- 新组件优先复用 `.lp-row` / `.lp-btn` / `.lp-banner--*` / `.lp-panel` / `.lp-status` / `.lp-field`
+- 改完按「UI 风格规范」第 6 节的人工核对清单过一遍（浅/深色、三档字号、窄屏、hover/disabled、各提示条）
+
 ## 目录结构
 
 ```
