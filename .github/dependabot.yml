@@ -1,0 +1,22 @@
+version: 2
+
+updates:
+  # 构建依赖（vite / typescript / vitest …）
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      npm-patch:
+        patterns: ["*"]
+        update-types: ["patch", "minor"]
+
+  # GitHub Actions（workflow 里以 commit SHA 固定，靠它升级）
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions-all:
+        patterns: ["*"]

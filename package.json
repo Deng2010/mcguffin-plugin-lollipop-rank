@@ -1,0 +1,31 @@
+{
+  "name": "mcguffin-plugin-lollipop-rank",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "榜榜糖 —— McGuffin 团队成员点糖 / 周冠军插件（独立仓库，按插件规范打成 zip 安装）",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "smoke": "node scripts/smoke-entry.mjs",
+    "zip": "node scripts/build-zip.mjs && node scripts/smoke-entry.mjs"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.3.0",
+    "adm-zip": "^0.5.16",
+    "jsdom": "^30.1.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "~7.0.2",
+    "vite": "^6.0.5",
+    "vitest": "^4.1.5"
+  }
+}

@@ -1,0 +1,42 @@
+name: CI
+
+# PR / 主分支：类型检查 + 单测 + 打包 + 产物契约冒烟测试。
+# 冒烟测试会真正 import 打好的入口 ESM，验证它能被宿主加载并完成自注册。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 准备 Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: 安装依赖（锁定版本）
+        run: npm ci
+
+      - name: 类型检查 + 单测
+        run: |
+          npx tsc --noEmit
+          npm test
+
+      - name: 打包并冒烟测试产物
+        run: npm run zip
+
+      - name: 上传 zip 产物
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: plugin-zip
+          path: dist/*.zip
+          if-no-files-found: error

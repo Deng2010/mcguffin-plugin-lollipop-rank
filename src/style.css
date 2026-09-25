@@ -1,0 +1,497 @@
+/*
+ * 榜榜糖插件样式。
+ *
+ * 为什么自带 CSS 而不是用 Tailwind 工具类：宿主的 Tailwind 构建扫描不到插件源码，
+ * `className="p-4"` 之类不会生成，故样式全部自带（注入方式见 src/styles.ts）。
+ *
+ * 约定：
+ *  - 所有选择器都以 `.lp-` 前缀 + 单层限定，绝不写全局选择器，避免污染宿主页面；
+ *  - 颜色走 CSS 变量，深色模式跟随宿主 `<html class="dark">`（宿主 themeStore 控制）；
+ *  - 尺寸用 rem，跟随宿主 html 的 font-size 缩放（宿主「字号」设置）；
+ *  - 默认 = v1 视觉（粉色主题 / 扁平卡片 / 灰阶文字）。
+ */
+
+.lp-page {
+  --lp-text: #1f2937;
+  --lp-text-strong: #111827;
+  --lp-muted: #6b7280;
+  --lp-faint: #9ca3af;
+  --lp-border: #d1d5db;
+  --lp-border-soft: #e5e7eb;
+  --lp-surface: #ffffff;
+  --lp-surface-alt: #f9fafb;
+  --lp-accent: #ec4899;
+  --lp-accent-strong: #db2777;
+  --lp-accent-soft: #fdf2f8;
+  --lp-accent-border: #f9a8d4;
+  --lp-accent-text: #be185d;
+  --lp-avatar-bg: #d1d5db;
+  --lp-avatar-text: #4b5563;
+  --lp-success-bg: #f0fdf4;
+  --lp-success-border: #86efac;
+  --lp-success-text: #15803d;
+  --lp-warn-bg: #fffbeb;
+  --lp-warn-border: #fcd34d;
+  --lp-warn-text: #b45309;
+  --lp-error-bg: #fef2f2;
+  --lp-error-border: #fca5a5;
+  --lp-error-text: #b91c1c;
+  --lp-info-bg: #eff6ff;
+  --lp-info-border: #93c5fd;
+  --lp-info-text: #1d4ed8;
+
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  color: var(--lp-text);
+}
+
+.dark .lp-page {
+  --lp-text: #f3f4f6;
+  --lp-text-strong: #ffffff;
+  --lp-muted: #9ca3af;
+  --lp-faint: #6b7280;
+  --lp-border: #374151;
+  --lp-border-soft: #1f2937;
+  --lp-surface: #111827;
+  --lp-surface-alt: rgba(31, 41, 55, 0.5);
+  --lp-accent-soft: rgba(131, 24, 67, 0.3);
+  --lp-accent-border: #9d174d;
+  --lp-accent-text: #f9a8d4;
+  --lp-avatar-bg: #374151;
+  --lp-avatar-text: #d1d5db;
+  --lp-success-bg: rgba(20, 83, 45, 0.3);
+  --lp-success-border: #166534;
+  --lp-success-text: #86efac;
+  --lp-warn-bg: rgba(120, 53, 15, 0.3);
+  --lp-warn-border: #92400e;
+  --lp-warn-text: #fcd34d;
+  --lp-error-bg: rgba(127, 29, 29, 0.3);
+  --lp-error-border: #991b1b;
+  --lp-error-text: #fca5a5;
+  --lp-info-bg: rgba(30, 58, 138, 0.3);
+  --lp-info-border: #1e40af;
+  --lp-info-text: #93c5fd;
+}
+
+/* ── 页头 ── */
+
+.lp-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.lp-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--lp-text-strong);
+}
+
+.lp-badge {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  background: var(--lp-accent-soft);
+  color: var(--lp-accent-text);
+  border: 1px solid var(--lp-accent-border);
+  border-radius: 999px;
+}
+
+.lp-version {
+  font-size: 0.75rem;
+  color: var(--lp-faint);
+  margin-left: auto;
+}
+
+/* ── 状态栏 ── */
+
+.lp-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--lp-surface-alt);
+  border: 1px solid var(--lp-border-soft);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.lp-status-item {
+  color: var(--lp-muted);
+}
+
+.lp-status strong {
+  color: var(--lp-text-strong);
+  margin-left: 0.25rem;
+}
+
+.lp-status .lp-accent {
+  color: var(--lp-accent-text);
+}
+
+.lp-status .lp-danger {
+  color: var(--lp-error-text);
+}
+
+.lp-status-right {
+  margin-left: auto;
+  color: var(--lp-faint);
+  font-size: 0.8125rem;
+}
+
+/* 参数快照 + 设置入口 */
+
+.lp-params {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+}
+
+.lp-params code {
+  font-family: inherit;
+  color: var(--lp-text);
+  background: var(--lp-surface-alt);
+  border: 1px solid var(--lp-border-soft);
+  border-radius: 0.25rem;
+  padding: 0.0625rem 0.375rem;
+}
+
+.lp-params-tag {
+  color: var(--lp-faint);
+}
+
+/* ── 提示条（冠军 / 反馈 / 非成员）── */
+
+.lp-banner {
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* 提示条里内嵌的段落 / 按钮（加载失败态、点糖反馈） */
+.lp-banner p {
+  margin: 0.375rem 0 0;
+  word-break: break-word;
+}
+
+.lp-banner .lp-btn {
+  margin: 0.625rem 0.75rem 0 0;
+}
+
+.lp-banner--champion {
+  background: var(--lp-accent-soft);
+  border-color: var(--lp-accent-border);
+  color: var(--lp-accent-text);
+  font-weight: 500;
+}
+
+.lp-banner--champion strong {
+  font-weight: 700;
+}
+
+.lp-banner--info {
+  background: var(--lp-info-bg);
+  border-color: var(--lp-info-border);
+  color: var(--lp-info-text);
+}
+
+.lp-banner--success {
+  background: var(--lp-success-bg);
+  border-color: var(--lp-success-border);
+  color: var(--lp-success-text);
+}
+
+.lp-banner--fail {
+  background: var(--lp-warn-bg);
+  border-color: var(--lp-warn-border);
+  color: var(--lp-warn-text);
+}
+
+.lp-banner--error {
+  background: var(--lp-error-bg);
+  border-color: var(--lp-error-border);
+  color: var(--lp-error-text);
+}
+
+/* ── 成员榜 ── */
+
+.lp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-border);
+  border-radius: 0.5rem;
+}
+
+.lp-row--champion {
+  border-color: var(--lp-accent-border);
+}
+
+.lp-member {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.lp-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--lp-avatar-bg);
+}
+
+.lp-avatar--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--lp-avatar-bg);
+  color: var(--lp-avatar-text);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.lp-member-text {
+  min-width: 0;
+}
+
+.lp-member-name {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+  color: var(--lp-text-strong);
+}
+
+.lp-member-name .lp-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lp-self-tag {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--lp-faint);
+  flex-shrink: 0;
+}
+
+.lp-member-sub {
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+}
+
+.lp-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.lp-prob {
+  font-size: 0.8125rem;
+  color: var(--lp-faint);
+  width: 6rem;
+  text-align: right;
+}
+
+.lp-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--lp-faint);
+  font-size: 0.875rem;
+}
+
+.lp-footer {
+  margin: 1.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--lp-faint);
+  line-height: 1.6;
+}
+
+/* ── 按钮 ── */
+
+.lp-btn {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.375rem;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: var(--lp-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.lp-btn:hover:not(:disabled) {
+  background: var(--lp-surface-alt);
+  color: var(--lp-text-strong);
+}
+
+.lp-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lp-btn--primary {
+  background: var(--lp-accent);
+  border-color: var(--lp-accent);
+  color: #ffffff;
+}
+
+.lp-btn--primary:hover:not(:disabled) {
+  background: var(--lp-accent-strong);
+  border-color: var(--lp-accent-strong);
+  color: #ffffff;
+}
+
+/* ── 设置面板 ── */
+
+.lp-panel {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--lp-surface-alt);
+  border: 1px solid var(--lp-border);
+  border-radius: 0.5rem;
+}
+
+.lp-panel-title {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--lp-text-strong);
+}
+
+.lp-panel-hint {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+  line-height: 1.6;
+}
+
+.lp-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.875rem;
+}
+
+.lp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lp-field label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--lp-text);
+}
+
+.lp-field input {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 0.375rem;
+  background: var(--lp-surface);
+  color: var(--lp-text-strong);
+}
+
+.lp-field input:focus-visible {
+  outline: 2px solid var(--lp-accent);
+  outline-offset: 1px;
+}
+
+.lp-field-hint {
+  font-size: 0.75rem;
+  color: var(--lp-faint);
+}
+
+.lp-field-error {
+  font-size: 0.75rem;
+  color: var(--lp-error-text);
+}
+
+.lp-preview {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+}
+
+.lp-save-error {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--lp-error-text);
+}
+
+.lp-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.lp-panel-actions .lp-spacer {
+  margin-left: auto;
+}
+
+/* ── 加载 / 失败态 ── */
+
+.lp-loading {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--lp-faint);
+  font-size: 0.875rem;
+}
+
+/* ── 窄屏 ── */
+
+@media (max-width: 40rem) {
+  .lp-page {
+    padding: 1rem;
+  }
+
+  .lp-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .lp-row-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .lp-prob {
+    text-align: left;
+    width: auto;
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "lollipop-rank",
+  "name": "榜榜糖",
+  "version": "2.0.0",
+  "description": "给团队成员点糖，每周结算冠军；糖越多成功率越低，失败清零（玩法参数可在插件内调整）",
+  "author": "mcguffin",
+  "permissions_needed": ["storage", "read:team"],
+  "entry": "index.js"
+}

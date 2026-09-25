@@ -1,0 +1,56 @@
+name: Release
+
+# 推送形如 v1.0.0 的 tag 时：安装依赖 → 校验版本 → 类型检查 + 单测 → 构建 zip
+# → 冒烟测试 → 把 dist/*.zip 作为 release 资产上传。
+#
+# 资产名固定为 <plugin.json 的 id>.zip（这里是 lollipop-rank.zip），
+# 因此下面这条地址可以长期不变，直接填进后台的「从 URL 安装」：
+#   https://github.com/<owner>/<repo>/releases/latest/download/lollipop-rank.zip
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 准备 Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: 安装依赖（锁定版本）
+        run: npm ci
+
+      - name: 校验 tag 与 plugin.json / package.json 版本一致
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PLUGIN_VERSION="$(node -p "require('./plugin.json').version")"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PLUGIN_VERSION" ] || [ "$TAG" != "$PKG_VERSION" ]; then
+            echo "::error::tag v$TAG 与 plugin.json($PLUGIN_VERSION) / package.json($PKG_VERSION) 不一致"
+            exit 1
+          fi
+
+      - name: 类型检查 + 单测
+        run: |
+          npx tsc --noEmit
+          npm test
+
+      - name: 构建并打包 zip（含冒烟测试）
+        run: npm run zip
+
+      - name: 上传 release 资产
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: dist/*.zip
+          fail_on_unmatched_files: true
+          generate_release_notes: true
